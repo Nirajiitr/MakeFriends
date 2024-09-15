@@ -1,13 +1,44 @@
-import React from 'react'
+import React, { Suspense } from "react";
 
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import DefaultPage from "./pages/DefaultPage";
+import HomePage from "./pages/HomePage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
+
+
+import Spinner from "./components/Spinner";
 const App = () => {
+ 
   return (
-    <div>
-      <button className='p-2 bg-red-600'>click</button>
-      
-    </div>
-    
-  )
-}
+   
+      <Suspense fallback={<Spinner />}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/*" element={<DefaultPage />} />
+            <Route
+              path="/"
+              element={
+                <PublicRoute>
+                  <DefaultPage />
+                </PublicRoute>
+              }
+            />
 
-export default App
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </Suspense>
+      
+   
+  );
+};
+
+export default App;
