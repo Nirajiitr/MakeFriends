@@ -38,9 +38,10 @@ export const register = async (req, res) => {
     });
 
     await newUser.save();
+    const {password:_,...user} = newUser._doc
     return res
       .status(201)
-      .json({ newUser, message: "Account created successfully" });
+      .json({ user, message: "Account created successfully" });
   } catch (error) {
     return res.status(501).json({ message: "Server error", error });
   }
@@ -65,15 +66,16 @@ export const login = async (req, res) => {
     const Token = jwt.sign(TokenData, process.env.JWT_SECRETE_KEY, {
       expiresIn: "1d",
     });
-
+     const {password:_,...user} = newUser._doc
     res
       .status(200)
       .cookie("Token", Token, {
         MaxAge: 1 * 24 * 60 * 60 * 1000,
         httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
       })
-      .json({ newUser, message: "logged in successfully" });
+      .json({user, message: "logged in successfully" });
   } catch (error) {
     res.status(501).json({ message: "server error", error });
   }

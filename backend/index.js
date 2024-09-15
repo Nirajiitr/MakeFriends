@@ -1,6 +1,7 @@
 import express from "express"
 import cors from "cors"
 import authRoute from "./routes/authRoute.js"
+import userRoute from "./routes/userRoute.js"
 import "dotenv/config"
 import mongoose from "mongoose";
 import cookieParser from "cookie-parser"
@@ -32,7 +33,7 @@ app.use(cors(corsOption));
 
 //routes
  app.use("/auth", authRoute)
- 
+ app.use("/user",userRoute)
  
 
 //server

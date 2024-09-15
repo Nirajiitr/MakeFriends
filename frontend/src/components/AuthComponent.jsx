@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, {useEffect, useState } from "react";
 import { IoCloseCircle } from "react-icons/io5";
 import brandLogo from "../assets/logo.png";
 
@@ -6,28 +6,28 @@ import { useNavigate } from "react-router-dom";
 
 import toast from "react-hot-toast";
 import axios from "axios";
-
-
 import Spinner from "./Spinner";
+import { useUser } from "../context";
 
 const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
-  const [userData, setUserData] = useState({
+  const [Loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const endPoint = login ? "login" : "register";
+  const {User,setUser} = useUser();
   
-    fullname : "",
+  const [userData, setUserData] = useState({
+    fullname: "",
     email: "",
     password: "",
     confirmPass: "",
     phone: "",
   });
- 
-  const [Loading, setLoading ] = useState(false)
-  const navigate = useNavigate();
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    const endPoint = login ? "login" : "register";
     try {
-      setLoading(true)
+      setLoading(true);
+      
       const res = await axios.post(
         `http://localhost:8888/auth/${endPoint}`,
         userData,
@@ -38,12 +38,15 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
           withCredentials: true,
         }
       );
-      
-      setLoading(false)
+       
+       setUser(res.data)
+       localStorage.setItem("user", JSON.stringify(res.data.user))
+       
+       navigate("/home");
+      setLoading(false);
       toast.success(res.data.message);
-      navigate("/home"); 
     } catch (error) {
-      setLoading(false)
+      setLoading(false);
       toast.error(error.response?.data?.message);
       navigate("/");
     }
@@ -56,7 +59,7 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
       phone: "",
     });
   };
-
+  
   if (Loading) {
     return <Spinner />;
   }
@@ -100,7 +103,6 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
                     setUserData({ ...userData, fullname: e.target.value })
                   }
                 />
-                
               </>
             )}
 
@@ -152,8 +154,6 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
                     setUserData({ ...userData, phone: e.target.value })
                   }
                 />
-
-                
               </>
             )}
 
@@ -165,7 +165,6 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
             </button>
           </div>
         </form>
-        
       </div>
     </div>
   );

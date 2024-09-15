@@ -1,15 +1,14 @@
 import React from 'react';
-
 import { Navigate } from 'react-router-dom';
-import Spinner from './Spinner';
+import { useUser } from '../context';
 
 const PublicRoute = ({ children }) => {
- 
-  // if(isLoading) return <Spinner />
+  const {User} = useUser()
+  
 
-  // if (data) {
-  //   return <Navigate to="/home" replace />;
-  // }
+  if (User) {
+    return <Navigate to="/home" replace />;
+  }
 
   return children;
 };
