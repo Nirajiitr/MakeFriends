@@ -38,7 +38,7 @@ export const register = async (req, res) => {
     });
 
     await newUser.save();
-    const {password:_,...user} = newUser._doc
+    const { password: _, ...user } = newUser._doc;
     return res
       .status(201)
       .json({ user, message: "Account created successfully" });
@@ -66,7 +66,7 @@ export const login = async (req, res) => {
     const Token = jwt.sign(TokenData, process.env.JWT_SECRETE_KEY, {
       expiresIn: "1d",
     });
-     const {password:_,...user} = newUser._doc
+    const { password: _, ...user } = newUser._doc;
     res
       .status(200)
       .cookie("Token", Token, {
@@ -75,7 +75,7 @@ export const login = async (req, res) => {
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
       })
-      .json({user, message: "logged in successfully" });
+      .json({ user, message: "logged in successfully" });
   } catch (error) {
     res.status(501).json({ message: "server error", error });
   }
