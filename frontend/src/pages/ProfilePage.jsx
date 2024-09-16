@@ -20,7 +20,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:8888/user/profile", {
+        const res = await axios.get("https://makefriends-za9e.onrender.com/user/profile", {
           withCredentials: true,
         });
         if (res.status === 200) {
@@ -63,7 +63,7 @@ const ProfilePage = () => {
 
     try {
       const res = await axios.put(
-        "http://localhost:8888/user/profile", 
+        "https://makefriends-za9e.onrender.com/user/profile", 
         { ...newData, hobbies: formattedHobbies },
         { withCredentials: true }
       );

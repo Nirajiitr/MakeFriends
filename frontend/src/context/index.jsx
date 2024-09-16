@@ -19,7 +19,7 @@ export const UserProvider = ({ children }) => {
       if (User) {
         try {
           const res = await axios.get(
-            "http://localhost:8888/auth/verify",
+            "https://makefriends-za9e.onrender.com/auth/verify",
             {
               withCredentials: true,
             }

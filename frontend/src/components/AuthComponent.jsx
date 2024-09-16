@@ -29,7 +29,7 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
       setLoading(true);
       
       const res = await axios.post(
-        `http://localhost:8888/auth/${endPoint}`,
+        `https://makefriends-za9e.onrender.com/auth/${endPoint}`,
         userData,
         {
           headers: {

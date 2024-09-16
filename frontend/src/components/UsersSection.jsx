@@ -15,7 +15,7 @@ const UsersSection = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get("http://localhost:8888/user/", { withCredentials: true });
+        const res = await axios.get("https://makefriends-za9e.onrender.com/user/", { withCredentials: true });
         if (res.status === 200) {
           setOtherUser(res.data);
         }
@@ -29,7 +29,7 @@ const UsersSection = () => {
   const handleAddFriend = async (id) => {
     try {
       const res = await axios.post(
-        `http://localhost:8888/user/${id}/add-friend`,
+        `https://makefriends-za9e.onrender.com/user/${id}/add-friend`,
         {},
         { withCredentials: true }
       );

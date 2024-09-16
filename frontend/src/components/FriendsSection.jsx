@@ -11,7 +11,7 @@ const FriendsSection = () => {
 
   const fetchUser = async () => {
     try {
-      const friendsRes = await axios.get("http://localhost:8888/user/friends", {
+      const friendsRes = await axios.get("https://makefriends-za9e.onrender.com/user/friends", {
         withCredentials: true,
       });
       if (friendsRes.status === 200) {
@@ -25,7 +25,7 @@ const FriendsSection = () => {
   const handleUnfriend = async (id) => {
     try {
       const res = await axios.put(
-        `http://localhost:8888/user/${id}/unfriend`,
+        `https://makefriends-za9e.onrender.com/user/${id}/unfriend`,
         {},
         { withCredentials: true }
       );

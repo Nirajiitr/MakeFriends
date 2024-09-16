@@ -10,7 +10,7 @@ const FriendRequestsSection = ({ setModel }) => {
     const fetchFriendRequests = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:8888/user/friend-requests",
+          "https://makefriends-za9e.onrender.com/user/friend-requests",
           { withCredentials: true }
         );
         setRequests(res.data);
@@ -25,7 +25,7 @@ const FriendRequestsSection = ({ setModel }) => {
   const handleRequest = async (requestId, action) => {
     try {
       const res = await axios.put(
-        `http://localhost:8888/user/${requestId}/handle-request`,
+        `https://makefriends-za9e.onrender.com/user/${requestId}/handle-request`,
         { status: action },
         { withCredentials: true }
       );
