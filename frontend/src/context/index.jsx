@@ -10,26 +10,20 @@ export const useUser = () => {
 };
 
 export const UserProvider = ({ children }) => {
- 
-  const getUser = () => {
-    try {
-      const user = localStorage.getItem("user");
-      return user ? JSON.parse(user) : null;
-    } catch (error) {
-      toast.error("invalid data")
-      return null;
-    }
-  };
+  const user = localStorage.getItem("user");
 
-  const [User, setUser] = useState(getUser);
+  const [User, setUser] = useState(user ? JSON.parse(user) : null);
 
   useEffect(() => {
     const verifyUser = async () => {
       if (User) {
         try {
-          const res = await axios.get("http://localhost:8888/auth/verify", {
-            withCredentials: true,
-          });
+          const res = await axios.get(
+            "http://localhost:8888/auth/verify",
+            {
+              withCredentials: true,
+            }
+          );
 
           if (res.status !== 200) {
             setUser(null);
@@ -45,7 +39,7 @@ export const UserProvider = ({ children }) => {
 
     verifyUser();
   }, [User]);
-
+  
   return (
     <UserContext.Provider value={{ User, setUser }}>
       {children}

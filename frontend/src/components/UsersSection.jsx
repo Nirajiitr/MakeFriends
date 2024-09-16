@@ -1,53 +1,51 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { CgProfile } from "react-icons/cg";
-
-
-const recommendedFriends = [
-  { id: 1, name: 'Alice Williams' },
-  { id: 2, name: 'Bob Brown' },
-  { id: 3, name: 'Charlie Davis' },
-  { id: 4, name: 'David Johnson' },
-  { id: 5, name: 'Eve Thompson' },
-];
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import useRecommendedFriends from "../hooks/useRecommendedFriends";
+import Spinner from "./Spinner";
+import UserList from "./UserList";
 
 const UsersSection = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [filteredFriends, setFilteredFriends] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [OtherUser, setOtherUser] = useState([]);
+  const { recommendedFriends, fetchRecommendedFriends, loading } = useRecommendedFriends();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get("http://localhost:8888/user/", {
-          withCredentials: true,
-        });
+        const res = await axios.get("http://localhost:8888/user/", { withCredentials: true });
         if (res.status === 200) {
           setOtherUser(res.data);
-        
-        } else {
-          console.error("Failed to fetch user");
         }
       } catch (error) {
-        console.log("Error fetching user:", error);
+        toast.error(error.response?.data?.message || "Failed to fetch users");
       }
     };
+    fetchUser();
+  }, []);
 
-    fetchUser(); 
-  }, []); 
+  const handleAddFriend = async (id) => {
+    try {
+      const res = await axios.post(
+        `http://localhost:8888/user/${id}/add-friend`,
+        {},
+        { withCredentials: true }
+      );
+      toast.success(res.data);
+      fetchRecommendedFriends();
+    } catch (error) {
+      toast.error(error.response?.data);
+    }
+  };
 
-
- 
   const handleSearch = () => {
-    const results = OtherUser.filter(friend =>
-     
+    const results = OtherUser.filter((friend) =>
       friend.fullname.toLowerCase().includes(searchTerm.toLowerCase())
-    
     );
     setFilteredFriends(results);
-    setIsModalOpen(true); 
+    setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
@@ -55,10 +53,9 @@ const UsersSection = () => {
   };
 
   return (
-    <div className="w-1/2 p-4  border-gray-600 rounded">
+    <div className="vsm:w-1/2 vsm:p-1 border-gray-600 rounded">
       <h2 className="text-lg font-bold mb-4">Search Users</h2>
-      
-      <div className="flex mb-6">
+      <div className="flex vsm:flex-col vsm:items-center gap-2 md:flex-row mb-6">
         <input
           type="text"
           value={searchTerm}
@@ -75,42 +72,17 @@ const UsersSection = () => {
       </div>
 
       <h3 className="text-md font-semibold mb-4">Recommended Friends</h3>
-      <ul className="space-y-4">
-        {recommendedFriends.map(friend => (
-          <li key={friend.id} className="flex items-center justify-between liBorder px-2">
-            <div className="flex items-center space-x-4">
-              <CgProfile size="64px" />
-              <span>{friend.name}</span>
-            </div>
-            <button className="btn bg-blue-500 hover:bg-blue-600 text-white">
-              Add Friend
-            </button>
-          </li>
-        ))}
-      </ul>
+      {loading ? (
+        <Spinner />
+      ) : (
+        <UserList users={recommendedFriends} handleAction={handleAddFriend} actionLabel="Add Friend" />
+      )}
 
-  
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg w-96">
             <h2 className="text-lg font-bold mb-4">Search Results</h2>
-            <ul className="space-y-4">
-              {filteredFriends.length > 0 ? (
-                filteredFriends.map(friend => (
-                  <li key={friend._id} className="flex items-center justify-between liBorder px-2">
-                    <div className="flex items-center space-x-4">
-                      <CgProfile size="64px" />
-                      <span>{friend.fullname}</span>
-                    </div>
-                    <button className="btn bg-green-500 hover:bg-green-600 text-white">
-                      Add Friend
-                    </button>
-                  </li>
-                ))
-              ) : (
-                <p>No users found</p>
-              )}
-            </ul>
+            <UserList users={filteredFriends} handleAction={handleAddFriend} actionLabel="Add Friend" />
             <button
               onClick={handleCloseModal}
               className="btn bg-red-500 hover:bg-red-600 text-white mt-4"

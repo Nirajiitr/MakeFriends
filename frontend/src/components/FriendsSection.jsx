@@ -1,33 +1,54 @@
-import React from 'react';
-import { CgProfile } from "react-icons/cg";
-import {useUser} from "../context/index.jsx"
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
+import useRecommendedFriends from "../hooks/useRecommendedFriends";
+import Spinner from "./Spinner";
+import UserList from "./UserList";
 
 const FriendsSection = () => {
-  const handleUnfriend = (id) => {
-   
-    console.log(`Unfriended user with id: ${id}`);
+  const { fetchRecommendedFriends, loading } = useRecommendedFriends();
+  const [Friends, setFriends] = useState(null);
+
+  const fetchUser = async () => {
+    try {
+      const friendsRes = await axios.get("http://localhost:8888/user/friends", {
+        withCredentials: true,
+      });
+      if (friendsRes.status === 200) {
+        setFriends(friendsRes.data);
+      }
+    } catch (error) {
+      toast.error("Failed to load friends");
+    }
   };
-   const {User} =useUser()
-  
+
+  const handleUnfriend = async (id) => {
+    try {
+      const res = await axios.put(
+        `http://localhost:8888/user/${id}/unfriend`,
+        {},
+        { withCredentials: true }
+      );
+      toast.success(res.data);
+      fetchUser();
+      fetchRecommendedFriends();
+    } catch (error) {
+      toast.error("An error occurred while unfriending");
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
-    <div className='w-1/2 p-4  border-gray-600 rounded '>
-      <h2 className="text-lg font-bold mb-4">Friends List</h2>
-      <ul className="space-y-4">
-        {User?.friends?.map(friend => (
-          <li key={friend._id} className="flex items-center px-2 justify-between liBorder">
-            <div className="flex items-center space-x-4">
-             <CgProfile size="64px" />
-              <span>{friend.fullname}</span>
-            </div>
-            <button
-              onClick={() => handleUnfriend(friend.id)}
-              className="btn bg-red-500 hover:bg-red-500 text-white"
-            >
-              Unfriend
-            </button>
-          </li>
-        ))}
-      </ul>
+    <div className="vsm:w-1/2 p-4 border-gray-600 rounded mx-auto">
+      <h2 className="text-lg font-bold mb-4 text-center">Friends List</h2>
+      <UserList users={Friends} handleAction={handleUnfriend} actionLabel="Unfriend" />
     </div>
   );
 };

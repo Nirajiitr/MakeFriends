@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IoCloseCircle } from "react-icons/io5";
 import brandLogo from "../assets/logo.png";
 
@@ -13,7 +13,7 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
   const [Loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const endPoint = login ? "login" : "register";
-  const {User,setUser} = useUser();
+  const {setUser} = useUser();
   
   const [userData, setUserData] = useState({
     fullname: "",
@@ -39,9 +39,9 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
         }
       );
        
-       setUser(res.data)
+       setUser(res.data.user)
        localStorage.setItem("user", JSON.stringify(res.data.user))
-       
+      
        navigate("/home");
       setLoading(false);
       toast.success(res.data.message);

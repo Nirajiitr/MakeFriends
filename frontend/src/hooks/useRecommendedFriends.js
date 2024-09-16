@@ -1,0 +1,39 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
+import toast from "react-hot-toast";
+
+const useRecommendedFriends = () => {
+  const [recommendedFriends, setRecommendedFriends] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const fetchRecommendedFriends = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(
+        "http://localhost:8888/user/recommended/friends",
+        {
+          withCredentials: true,
+        }
+      );
+      if (res.status === 200) {
+        setRecommendedFriends(res.data);
+      } else {
+        setRecommendedFriends(null);
+      }
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Failed to fetch recommended friends"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRecommendedFriends();
+  }, []);
+ 
+  return { recommendedFriends, fetchRecommendedFriends, loading };
+};
+
+export default useRecommendedFriends;
