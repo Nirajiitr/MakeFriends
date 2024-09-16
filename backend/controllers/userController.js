@@ -105,12 +105,7 @@ export const recommendedFriends = async (req, res) => {
       .select("fullname email phone hobbies")
       .limit(10);
 
-    if (recommendedUsers.length === 0) {
-      return res
-        .status(200)
-        .json({ message: "No recommended friends at the moment." });
-    }
-
+    
     res.status(200).json(recommendedUsers);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
