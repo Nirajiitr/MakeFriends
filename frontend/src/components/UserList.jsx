@@ -4,7 +4,7 @@ import { CgProfile } from "react-icons/cg";
 const UserList = ({ users, handleAction, actionLabel }) => {
   return (
     <ul className="space-y-4">
-      {users?.length > 0 ? (
+      {
         users.map((user) => (
           <li
             key={user._id}
@@ -22,9 +22,8 @@ const UserList = ({ users, handleAction, actionLabel }) => {
             </button>
           </li>
         ))
-      ) : (
-        <p>No users found</p>
-      )}
+      
+      }
     </ul>
   );
 };

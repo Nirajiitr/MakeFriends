@@ -2,18 +2,27 @@ import { User } from "../models/authModel.js";
 
 export const getOtherUser = async (req, res) => {
   const LoggedInUser = req.id;
+
   try {
-    const OtherUsers = await User.find({ _id: { $ne: LoggedInUser } }).select(
-      "-Password"
-    );
-    if (!OtherUsers) {
-      return res.status(404).json({ message: "User not found" });
+   
+    const loggedInUserData = await User.findById(LoggedInUser).select("friends");
+
+    
+    const friends = loggedInUserData?.friends || []; 
+    const OtherUsers = await User.find({
+      _id: { $nin: [LoggedInUser, ...friends] }, 
+    }).select("-Password");
+
+    if (!OtherUsers || OtherUsers.length === 0) {
+      return res.status(404).json({ message: "No other users found" });
     }
+
     res.status(200).json(OtherUsers);
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 export const getUserProfile = async (req, res) => {
   const userId = req.id;
   try {

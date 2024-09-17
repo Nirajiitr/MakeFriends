@@ -1,50 +1,38 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import useRecommendedFriends from "../hooks/useRecommendedFriends";
 import Spinner from "./Spinner";
 import UserList from "./UserList";
+import useGetFriends from "../hooks/useGetFriends";
+import { useState } from "react";
+
 
 const FriendsSection = () => {
-  const { fetchRecommendedFriends, loading } = useRecommendedFriends();
-  const [Friends, setFriends] = useState(null);
+  const [loading, setLoading]= useState(false)
+  
+   const {Friends, setFriends} = useGetFriends()
   const token = sessionStorage.getItem("token") ? JSON.parse(sessionStorage.getItem("token")) : null
-  const fetchUser = async () => {
-    try {
-      const friendsRes = await axios.get("https://makefriends-pyom.onrender.com/user/friends", {
-        headers :{
-              Authorization : `Bearer ${token}`
-             },
-      });
-      if (friendsRes.status === 200) {
-        setFriends(friendsRes.data);
-      }
-    } catch (error) {
-      toast.error("Failed to load friends");
-    }
-  };
 
   const handleUnfriend = async (id) => {
+    setLoading(true)
     try {
       const res = await axios.put(
-        `https://makefriends-pyom.onrender.com/user/${id}/unfriend`,
-        {},
+        `${import.meta.env.VITE_BASE_URL}/user/${id}/unfriend`,{},
         { headers :{
               Authorization : `Bearer ${token}`
-             } }
+            }
+            
+        }
       );
       toast.success(res.data);
-      fetchUser();
-      fetchRecommendedFriends();
+      setFriends((prevRequests) =>
+        prevRequests.filter((req) => req._id !== id)
+      );
+      setLoading(false)
     } catch (error) {
       toast.error("An error occurred while unfriending");
+      setLoading(false)
     }
   };
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
-
   if (loading) {
     return <Spinner />;
   }
@@ -52,7 +40,11 @@ const FriendsSection = () => {
   return (
     <div className="vsm:w-1/2 p-4 border-gray-600 rounded mx-auto">
       <h2 className="text-lg font-bold mb-4 text-center">Friends List</h2>
-      <UserList users={Friends} handleAction={handleUnfriend} actionLabel="Unfriend" />
+      {
+       Friends && Friends.length!==0 ? <UserList users={Friends} handleAction={handleUnfriend} actionLabel="Unfriend" /> : 
+        <p className="text-lg font-semibold mb-4 text-center">You not made friends yet</p>
+      }
+      
     </div>
   );
 };

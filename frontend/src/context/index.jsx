@@ -19,7 +19,7 @@ export const UserProvider = ({ children }) => {
       if (User) {
         try {
           const res = await axios.get(
-            "https://makefriends-pyom.onrender.com/auth/verify",
+            `${import.meta.env.VITE_BASE_URL}/auth/verify`,
             {
              headers :{
               Authorization : `Bearer ${token}`

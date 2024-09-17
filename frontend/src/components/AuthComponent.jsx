@@ -29,7 +29,7 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
       setLoading(true);
       
       const res = await axios.post(
-        `https://makefriends-pyom.onrender.com/auth/${endPoint}`,
+        `${import.meta.env.VITE_BASE_URL}/auth/${endPoint}`,
         userData,
         {
           headers: {

@@ -1,20 +1,22 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import toast from "react-hot-toast";
+
 
 const useRecommendedFriends = () => {
   const [recommendedFriends, setRecommendedFriends] = useState(null);
   const [loading, setLoading] = useState(false);
-  const token = sessionStorage.getItem("token") ? JSON.parse(sessionStorage.getItem("token")) : null
+  const token = sessionStorage.getItem("token")
+    ? JSON.parse(sessionStorage.getItem("token"))
+    : null;
   const fetchRecommendedFriends = async () => {
     setLoading(true);
     try {
       const res = await axios.get(
-        "https://makefriends-pyom.onrender.com/user/recommended/friends",
+        `${import.meta.env.VITE_BASE_URL}/user/recommended/friends`,
         {
-          headers :{
-              Authorization : `Bearer ${token}`
-             },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       if (res.status === 200) {
@@ -23,9 +25,7 @@ const useRecommendedFriends = () => {
         setRecommendedFriends(null);
       }
     } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Failed to fetch recommended friends"
-      );
+      console.log(error.message);
     } finally {
       setLoading(false);
     }
@@ -34,8 +34,8 @@ const useRecommendedFriends = () => {
   useEffect(() => {
     fetchRecommendedFriends();
   }, []);
- 
-  return { recommendedFriends, fetchRecommendedFriends, loading };
+
+  return { recommendedFriends, fetchRecommendedFriends, setRecommendedFriends, loading };
 };
 
 export default useRecommendedFriends;
