@@ -17,6 +17,7 @@ const Navbar = ({ location, signupModel, showLoginModel }) => {
    
   const handleLogout = async () => {
     setUser(null);
+    sessionStorage.removeItem("token")
     navigate("/");
   };
   return (

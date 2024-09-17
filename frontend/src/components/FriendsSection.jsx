@@ -8,11 +8,13 @@ import UserList from "./UserList";
 const FriendsSection = () => {
   const { fetchRecommendedFriends, loading } = useRecommendedFriends();
   const [Friends, setFriends] = useState(null);
-
+  const token = sessionStorage.getItem("token") ? JSON.parse(sessionStorage.getItem("token")) : null
   const fetchUser = async () => {
     try {
       const friendsRes = await axios.get("https://makefriends-za9e.onrender.com/user/friends", {
-        withCredentials: true,
+        headers :{
+              Authorization : `Bearer ${token}`
+             },
       });
       if (friendsRes.status === 200) {
         setFriends(friendsRes.data);
@@ -27,7 +29,9 @@ const FriendsSection = () => {
       const res = await axios.put(
         `https://makefriends-za9e.onrender.com/user/${id}/unfriend`,
         {},
-        { withCredentials: true }
+        { headers :{
+              Authorization : `Bearer ${token}`
+             } }
       );
       toast.success(res.data);
       fetchUser();

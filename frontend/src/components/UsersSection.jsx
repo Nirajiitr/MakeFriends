@@ -11,11 +11,13 @@ const UsersSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [OtherUser, setOtherUser] = useState([]);
   const { recommendedFriends, fetchRecommendedFriends, loading } = useRecommendedFriends();
-
+  const token = sessionStorage.getItem("token") ? JSON.parse(sessionStorage.getItem("token")) : null
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get("https://makefriends-za9e.onrender.com/user/", { withCredentials: true });
+        const res = await axios.get("https://makefriends-za9e.onrender.com/user/", { headers :{
+              Authorization : `Bearer ${token}`
+             } });
         if (res.status === 200) {
           setOtherUser(res.data);
         }
@@ -31,7 +33,9 @@ const UsersSection = () => {
       const res = await axios.post(
         `https://makefriends-za9e.onrender.com/user/${id}/add-friend`,
         {},
-        { withCredentials: true }
+        { headers :{
+              Authorization : `Bearer ${token}`
+             } }
       );
       toast.success(res.data);
       fetchRecommendedFriends();

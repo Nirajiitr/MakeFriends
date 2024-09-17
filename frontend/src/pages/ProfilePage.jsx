@@ -16,12 +16,14 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-
+  const token = sessionStorage.getItem("token") ? JSON.parse(sessionStorage.getItem("token")) : null
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         const res = await axios.get("https://makefriends-za9e.onrender.com/user/profile", {
-          withCredentials: true,
+          headers :{
+              Authorization : `Bearer ${token}`
+             },
         });
         if (res.status === 200) {
        
@@ -65,7 +67,9 @@ const ProfilePage = () => {
       const res = await axios.put(
         "https://makefriends-za9e.onrender.com/user/profile", 
         { ...newData, hobbies: formattedHobbies },
-        { withCredentials: true }
+        { headers :{
+              Authorization : `Bearer ${token}`
+             } }
       );
       toast.success("Profile updated successfully");
       setUser(res.data);

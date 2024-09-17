@@ -69,13 +69,7 @@ export const login = async (req, res) => {
     const { password: _, ...user } = newUser._doc;
     res
       .status(200)
-      .cookie("Token", Token, {
-        MaxAge: 1 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-      })
-      .json({ user, message: "logged in successfully" });
+      .json({ user,Token, message: "logged in successfully" });
   } catch (error) {
     res.status(501).json({ message: "server error", error });
   }

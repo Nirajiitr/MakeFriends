@@ -5,13 +5,15 @@ import { IoMdCloseCircle } from "react-icons/io";
 
 const FriendRequestsSection = ({ setModel }) => {
   const [requests, setRequests] = useState([]);
-
+  const token = sessionStorage.getItem("token") ? JSON.parse(sessionStorage.getItem("token")) : null
   useEffect(() => {
     const fetchFriendRequests = async () => {
       try {
         const res = await axios.get(
           "https://makefriends-za9e.onrender.com/user/friend-requests",
-          { withCredentials: true }
+          { headers :{
+              Authorization : `Bearer ${token}`
+             } }
         );
         setRequests(res.data);
       } catch (error) {
@@ -27,7 +29,9 @@ const FriendRequestsSection = ({ setModel }) => {
       const res = await axios.put(
         `https://makefriends-za9e.onrender.com/user/${requestId}/handle-request`,
         { status: action },
-        { withCredentials: true }
+        { headers :{
+              Authorization : `Bearer ${token}`
+             } }
       );
       toast.success(res.data);
       setRequests((prevRequests) =>

@@ -14,7 +14,7 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
   const navigate = useNavigate();
   const endPoint = login ? "login" : "register";
   const {setUser} = useUser();
-  
+   const token = sessionStorage.getItem("token") ? JSON.parse(sessionStorage.getItem("token")) : null
   const [userData, setUserData] = useState({
     fullname: "",
     email: "",
@@ -35,11 +35,14 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true,
+          headers :{
+              Authorization : `Bearer ${token}`
+             },
         }
       );
        
        setUser(res.data.user)
+       sessionStorage.setItem("token", res.data.Token)
        localStorage.setItem("user", JSON.stringify(res.data.user))
       
        navigate("/home");

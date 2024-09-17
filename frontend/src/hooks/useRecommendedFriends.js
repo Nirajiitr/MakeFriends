@@ -5,14 +5,16 @@ import toast from "react-hot-toast";
 const useRecommendedFriends = () => {
   const [recommendedFriends, setRecommendedFriends] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const token = sessionStorage.getItem("token") ? JSON.parse(sessionStorage.getItem("token")) : null
   const fetchRecommendedFriends = async () => {
     setLoading(true);
     try {
       const res = await axios.get(
         "https://makefriends-za9e.onrender.com/user/recommended/friends",
         {
-          withCredentials: true,
+          headers :{
+              Authorization : `Bearer ${token}`
+             },
         }
       );
       if (res.status === 200) {

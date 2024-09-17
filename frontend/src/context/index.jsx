@@ -13,7 +13,7 @@ export const UserProvider = ({ children }) => {
   const user = localStorage.getItem("user");
 
   const [User, setUser] = useState(user ? JSON.parse(user) : null);
-
+   const token = sessionStorage.getItem("token")? JSON.parse(sessionStorage.getItem("token")) : null
   useEffect(() => {
     const verifyUser = async () => {
       if (User) {
@@ -21,7 +21,9 @@ export const UserProvider = ({ children }) => {
           const res = await axios.get(
             "https://makefriends-za9e.onrender.com/auth/verify",
             {
-              withCredentials: true,
+             headers :{
+              Authorization : `Bearer ${token}`
+             }
             }
           );
 
