@@ -29,20 +29,19 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
       setLoading(true);
       
       const res = await axios.post(
-        `https://makefriends-za9e.onrender.com/auth/${endPoint}`,
+        `https://makefriends-pyom.onrender.com/auth/${endPoint}`,
         userData,
         {
           headers: {
             "Content-Type": "application/json",
+            Authorization : `Bearer ${token}`
           },
-          headers :{
-              Authorization : `Bearer ${token}`
-             },
+          
         }
       );
        
        setUser(res.data.user)
-       sessionStorage.setItem("token", res.data.Token)
+       sessionStorage.setItem("token", JSON.stringify(res.data.Token))
        localStorage.setItem("user", JSON.stringify(res.data.user))
       
        navigate("/home");

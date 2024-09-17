@@ -11,7 +11,7 @@ const FriendsSection = () => {
   const token = sessionStorage.getItem("token") ? JSON.parse(sessionStorage.getItem("token")) : null
   const fetchUser = async () => {
     try {
-      const friendsRes = await axios.get("https://makefriends-za9e.onrender.com/user/friends", {
+      const friendsRes = await axios.get("https://makefriends-pyom.onrender.com/user/friends", {
         headers :{
               Authorization : `Bearer ${token}`
              },
@@ -27,7 +27,7 @@ const FriendsSection = () => {
   const handleUnfriend = async (id) => {
     try {
       const res = await axios.put(
-        `https://makefriends-za9e.onrender.com/user/${id}/unfriend`,
+        `https://makefriends-pyom.onrender.com/user/${id}/unfriend`,
         {},
         { headers :{
               Authorization : `Bearer ${token}`

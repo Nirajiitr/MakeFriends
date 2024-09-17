@@ -10,7 +10,7 @@ const useRecommendedFriends = () => {
     setLoading(true);
     try {
       const res = await axios.get(
-        "https://makefriends-za9e.onrender.com/user/recommended/friends",
+        "https://makefriends-pyom.onrender.com/user/recommended/friends",
         {
           headers :{
               Authorization : `Bearer ${token}`

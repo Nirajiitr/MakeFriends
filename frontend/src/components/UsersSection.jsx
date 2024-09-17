@@ -15,7 +15,7 @@ const UsersSection = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get("https://makefriends-za9e.onrender.com/user/", { headers :{
+        const res = await axios.get("https://makefriends-pyom.onrender.com/user/", { headers :{
               Authorization : `Bearer ${token}`
              } });
         if (res.status === 200) {
@@ -31,7 +31,7 @@ const UsersSection = () => {
   const handleAddFriend = async (id) => {
     try {
       const res = await axios.post(
-        `https://makefriends-za9e.onrender.com/user/${id}/add-friend`,
+        `https://makefriends-pyom.onrender.com/user/${id}/add-friend`,
         {},
         { headers :{
               Authorization : `Bearer ${token}`

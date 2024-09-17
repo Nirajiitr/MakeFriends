@@ -20,7 +20,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const res = await axios.get("https://makefriends-za9e.onrender.com/user/profile", {
+        const res = await axios.get("https://makefriends-pyom.onrender.com/user/profile", {
           headers :{
               Authorization : `Bearer ${token}`
              },
@@ -65,7 +65,7 @@ const ProfilePage = () => {
 
     try {
       const res = await axios.put(
-        "https://makefriends-za9e.onrender.com/user/profile", 
+        "https://makefriends-pyom.onrender.com/user/profile", 
         { ...newData, hobbies: formattedHobbies },
         { headers :{
               Authorization : `Bearer ${token}`

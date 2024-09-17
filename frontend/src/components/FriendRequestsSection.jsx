@@ -10,7 +10,7 @@ const FriendRequestsSection = ({ setModel }) => {
     const fetchFriendRequests = async () => {
       try {
         const res = await axios.get(
-          "https://makefriends-za9e.onrender.com/user/friend-requests",
+          "https://makefriends-pyom.onrender.com/user/friend-requests",
           { headers :{
               Authorization : `Bearer ${token}`
              } }
@@ -27,7 +27,7 @@ const FriendRequestsSection = ({ setModel }) => {
   const handleRequest = async (requestId, action) => {
     try {
       const res = await axios.put(
-        `https://makefriends-za9e.onrender.com/user/${requestId}/handle-request`,
+        `https://makefriends-pyom.onrender.com/user/${requestId}/handle-request`,
         { status: action },
         { headers :{
               Authorization : `Bearer ${token}`
