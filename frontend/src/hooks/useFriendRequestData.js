@@ -1,12 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useUser } from "../context";
 
 
 
 const useFriendRequestData = () => {
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(false);
-    const token = sessionStorage.getItem("token") ? JSON.parse(sessionStorage.getItem("token")) : null
+    const {token} = useUser()
     const fetchFriendRequests = async () => {
       setLoading(true);
       try {

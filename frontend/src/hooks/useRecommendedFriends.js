@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useUser } from "../context";
 
 
 const useRecommendedFriends = () => {
   const [recommendedFriends, setRecommendedFriends] = useState(null);
   const [loading, setLoading] = useState(false);
-  const token = sessionStorage.getItem("token")
-    ? JSON.parse(sessionStorage.getItem("token"))
-    : null;
+  const {token} = useUser()
   const fetchRecommendedFriends = async () => {
     setLoading(true);
     try {

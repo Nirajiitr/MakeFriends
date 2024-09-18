@@ -1,12 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useUser } from "../context";
 
 
 
 const useOtherUsersData = () => {
     const [OtherUser, setOtherUser] = useState([]);
     const [loading, setLoading] = useState(false);
-    const token = sessionStorage.getItem("token") ? JSON.parse(sessionStorage.getItem("token")) : null
+    const {token } = useUser()
     const fetchOtherUser = async () => {
       setLoading(true);
       try {
@@ -29,7 +30,7 @@ const useOtherUsersData = () => {
       fetchOtherUser();
     }, []);
    
-    return { OtherUser, fetchOtherUser, loading };
+    return { OtherUser, setOtherUser, fetchOtherUser, loading };
 }
 
 export default useOtherUsersData

@@ -6,12 +6,12 @@ import FriendsSection from "../components/FriendsSection";
 
 const HomePage = () => {
   return (
-    <div className="flex flex-col w-screen min-h-screen text-black overflow-y-scroll no-scrollbar ">
+    <div className="flex flex-col w-screen h-screen text-black overflow-hidden no-scrollbar">
       <Navbar />
-        <div className="flex flex-row w-screen flex-grow ">
-          <UsersSection />
-          <FriendsSection /> 
-         </div> 
+      <div className="flex flex-grow w-full overflow-hidden">
+        <UsersSection />
+        <FriendsSection />
+      </div>
       <Footer />
     </div>
   );

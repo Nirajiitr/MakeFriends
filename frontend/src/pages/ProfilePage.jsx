@@ -16,7 +16,7 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
-  const token = sessionStorage.getItem("token") ? JSON.parse(sessionStorage.getItem("token")) : null
+  const {token} = useUser()
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {

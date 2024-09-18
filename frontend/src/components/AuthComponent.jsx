@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { IoCloseCircle } from "react-icons/io5";
 import brandLogo from "../assets/logo.png";
-
 import { useNavigate } from "react-router-dom";
-
 import toast from "react-hot-toast";
 import axios from "axios";
 import Spinner from "./Spinner";
@@ -13,8 +11,8 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
   const [Loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const endPoint = login ? "login" : "register";
-  const {setUser} = useUser();
-   const token = sessionStorage.getItem("token") ? JSON.parse(sessionStorage.getItem("token")) : null
+  const { setUser, setToken, token } = useUser();
+
   const [userData, setUserData] = useState({
     fullname: "",
     email: "",
@@ -22,29 +20,28 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
     confirmPass: "",
     phone: "",
   });
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
-      
+
       const res = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/auth/${endPoint}`,
         userData,
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization : `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
-          
         }
       );
-       
-       setUser(res.data.user)
-       sessionStorage.setItem("token", JSON.stringify(res.data.Token))
-       localStorage.setItem("user", JSON.stringify(res.data.user))
-      
-       navigate("/home");
+
+      setUser(res.data.user);
+      setToken(res.data.Token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("Token", JSON.stringify(res.data.Token));
+      navigate("/home");
       setLoading(false);
       toast.success(res.data.message);
     } catch (error) {
@@ -61,18 +58,19 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
       phone: "",
     });
   };
-  
+
   if (Loading) {
     return <Spinner />;
   }
+
   return (
-    <div className="fixed inset-0 bg-slate-200 bg-opacity-90 flex justify-center items-center">
-      <div className="bg-white text-black w-[600px] h-[600px] rounded-xl">
-        <div className="flex justify-between p-3 ">
-          <img className="size-10" src={brandLogo} alt="brand logo" />
+    <div className="fixed inset-0 bg-slate-200 bg-opacity-90 flex justify-center items-center p-4">
+      <div className="bg-white text-black w-full max-w-[600px] h-auto  rounded-xl pb-5 shadow-lg">
+        <div className="flex justify-between p-3 items-center">
+          <img className="h-10 w-10" src={brandLogo} alt="brand logo" />
           {login ? (
             <>
-              <h1 className="text-3xl font-bold">Welcome back</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold">Welcome back</h1>
               <IoCloseCircle
                 size="24px"
                 className="hover:cursor-pointer hover:scale-105"
@@ -81,7 +79,7 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
             </>
           ) : (
             <>
-              <h1 className="text-3xl font-bold">Sign Up to MakeFriends</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold">Sign Up to MakeFriends</h1>
               <IoCloseCircle
                 size="24px"
                 className="hover:cursor-pointer hover:scale-105"
@@ -90,17 +88,18 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
             </>
           )}
         </div>
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-rows-2 grid-cols-2 gap-5 p-10">
+
+        <form className="flex flex-col items-center" onSubmit={handleSubmit}>
+          <div className=" flex flex-wrap gap-5 p-5 flex-grow">
             {!login && (
               <>
                 <input
-                  className="rounded-3xl inputBorder focus:outline-none p-3"
+                  className="rounded-3xl w-full inputBorder focus:outline-none p-3"
                   type="text"
-                  placeholder="Enter your fullname "
+                  placeholder="Enter your fullname"
                   name="fullname"
                   required
-                  value={userData.firstname}
+                  value={userData.fullname}
                   onChange={(e) =>
                     setUserData({ ...userData, fullname: e.target.value })
                   }
@@ -109,9 +108,9 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
             )}
 
             <input
-              className="rounded-3xl inputBorder focus:outline-none p-3"
+              className="rounded-3xl w-full inputBorder focus:outline-none p-3"
               type="email"
-              placeholder="Enter your email "
+              placeholder="Enter your email"
               name="email"
               required
               value={userData.email}
@@ -121,9 +120,9 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
             />
 
             <input
-              className="rounded-3xl inputBorder focus:outline-none p-3"
+              className="rounded-3xl w-full inputBorder focus:outline-none p-3"
               type="password"
-              placeholder="password [min. 6 digits] "
+              placeholder="Password (min. 6 digits)"
               name="password"
               minLength="6"
               required
@@ -132,12 +131,13 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
                 setUserData({ ...userData, password: e.target.value })
               }
             />
+
             {!login && (
               <>
                 <input
-                  className="rounded-3xl inputBorder focus:outline-none p-3"
+                  className="rounded-3xl w-full inputBorder focus:outline-none p-3"
                   type="password"
-                  placeholder="confirm password [min. 6 digits] "
+                  placeholder="Confirm password (min. 6 digits)"
                   name="confirmPass"
                   required
                   value={userData.confirmPass}
@@ -145,10 +145,11 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
                     setUserData({ ...userData, confirmPass: e.target.value })
                   }
                 />
+
                 <input
-                  className="rounded-3xl inputBorder focus:outline-none p-3"
+                  className="rounded-3xl w-full inputBorder focus:outline-none p-3"
                   type="text"
-                  placeholder="your phone number[Indian]"
+                  placeholder="Phone number [indian]"
                   name="phone"
                   required
                   value={userData.phone}
@@ -158,14 +159,14 @@ const AuthPage = ({ showSignupModel, showLoginModel, login }) => {
                 />
               </>
             )}
-
+            </div>
             <button
-              className=" justify-stretch  text-2xl py-3 rounded-3xl btn hover:text-white col-span-2"
+              className="btn "
               type="submit"
             >
-              submit
+              Submit
             </button>
-          </div>
+          
         </form>
       </div>
     </div>

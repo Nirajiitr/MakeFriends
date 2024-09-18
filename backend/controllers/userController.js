@@ -1,16 +1,24 @@
 import { User } from "../models/authModel.js";
+import { FriendRequest } from "../models/friendRequestModel.js";
 
 export const getOtherUser = async (req, res) => {
   const LoggedInUser = req.id;
 
   try {
-   
+     
     const loggedInUserData = await User.findById(LoggedInUser).select("friends");
-
     
+    const pendingRequests = await FriendRequest.find({
+      $or: [{ sender: LoggedInUser }, { receiver: LoggedInUser }],
+      status: "pending",
+    });
+    const pendingRequestIds = pendingRequests.flatMap((request) => [
+      request.sender.toString(),
+      request.receiver.toString(),
+    ]);
     const friends = loggedInUserData?.friends || []; 
     const OtherUsers = await User.find({
-      _id: { $nin: [LoggedInUser, ...friends] }, 
+      _id: { $nin: [LoggedInUser, ...friends, ...pendingRequestIds] }, 
     }).select("-Password");
 
     if (!OtherUsers || OtherUsers.length === 0) {
@@ -90,36 +98,48 @@ export const getFriends = async (req, res) => {
   }
 };
 
+
+
 export const recommendedFriends = async (req, res) => {
   const userId = req.id;
 
   try {
+    
     const currentUser = await User.findById(userId).populate("friends");
 
     if (!currentUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const currentFriendsIds = currentUser.friends.map((friend) => friend._id);
+    const currentFriendsIds = currentUser.friends.map((friend) => friend._id.toString());
 
-    currentFriendsIds.push(currentUser._id);
+    const pendingRequests = await FriendRequest.find({
+      $or: [{ sender: userId }, { receiver: userId }],
+      status: "pending",
+    });
+
+    const pendingRequestIds = pendingRequests.flatMap((request) => [
+      request.sender.toString(),
+      request.receiver.toString(),
+    ]);
+
+    const exclusionList = [...currentFriendsIds, ...pendingRequestIds, currentUser._id.toString()];
 
     const recommendedUsers = await User.find({
-      _id: { $nin: currentFriendsIds },
+      _id: { $nin: exclusionList },
       $or: [
-        { hobbies: { $in: currentUser.hobbies } },
-        { friends: { $in: currentUser.friends } },
+        { hobbies: { $in: currentUser.hobbies } }, 
+        { friends: { $in: currentFriendsIds } },  
       ],
     })
       .select("fullname email phone hobbies")
-      .limit(10);
-
-    
+      
     res.status(200).json(recommendedUsers);
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 export const updateUser = async (req, res) => {
   const currentUserId = req.id;
 

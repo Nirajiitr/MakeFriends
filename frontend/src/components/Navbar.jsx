@@ -13,11 +13,12 @@ const Navbar = ({ location, signupModel, showLoginModel }) => {
   const navigate = useNavigate();
   const [Menu, setMenu] = useState(false);
   const [openNotification, setOpenNotification] = useState(false);
-  const { User, setUser } = useUser();
-   
+  const { User,  setToken} = useUser();
+  
   const handleLogout = async () => {
-    setUser(null);
-    sessionStorage.removeItem("token")
+    setToken(null)
+     localStorage.removeItem("Token")
+     localStorage.removeItem("user")
     navigate("/");
   };
   return (
@@ -65,9 +66,9 @@ const Navbar = ({ location, signupModel, showLoginModel }) => {
               <CgProfile size="120px" />
              
    
-               <p className=" font-bold text-lg ">{User.fullname}</p>
+               <p className=" font-bold text-lg ">{User?.fullname}</p>
                  <ul className="flex gap-1 flex-wrap pb-10 justify-center">
-                  {User.hobbies ? User.hobbies.map((hobbe, index)=>{
+                  {User?.hobbies ? User?.hobbies.map((hobbe, index)=>{
                     return <li key={index} className="font-thin text-sm border-2 rounded-md">{hobbe}</li>
                   }): <p>Hobbies not set yet</p> }
                  </ul>

@@ -10,13 +10,14 @@ export const useUser = () => {
 };
 
 export const UserProvider = ({ children }) => {
-  const user = localStorage.getItem("user");
-
-  const [User, setUser] = useState(user ? JSON.parse(user) : null);
-   const token = sessionStorage.getItem("token")? JSON.parse(sessionStorage.getItem("token")) : null
+  const Token = localStorage.getItem("Token")? JSON.parse(localStorage.getItem("Token")) : null
+  const user = localStorage.getItem("user")? JSON.parse(localStorage.getItem("user")) : null
+  const [User, setUser] = useState(user);
+  const [token, setToken] = useState(Token);
+   
   useEffect(() => {
     const verifyUser = async () => {
-      if (User) {
+      if (Token) {
         try {
           const res = await axios.get(
             `${import.meta.env.VITE_BASE_URL}/auth/verify`,
@@ -29,21 +30,25 @@ export const UserProvider = ({ children }) => {
 
           if (res.status !== 200) {
             setUser(null);
+            setToken(null);
             localStorage.removeItem("user");
+            localStorage.removeItem("Token");
           }
         } catch (error) {
           toast.error(error.response?.data?.message || "Error verifying user");
           setUser(null);
+          setToken(null);
           localStorage.removeItem("user");
+          localStorage.removeItem("Token");
         }
       }
     };
 
     verifyUser();
-  }, [User]);
+  }, [Token]);
   
   return (
-    <UserContext.Provider value={{ User, setUser }}>
+    <UserContext.Provider value={{ User, setUser, token, setToken }}>
       {children}
     </UserContext.Provider>
   );

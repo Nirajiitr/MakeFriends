@@ -3,14 +3,16 @@ import toast from "react-hot-toast";
 import { IoMdCloseCircle } from "react-icons/io";
 import useFriendRequestData from "../hooks/useFriendRequestData";
 import useRecommendedFriends from "../hooks/useRecommendedFriends";
+import { useUser } from "../context";
+import useGetFriends from "../hooks/useGetFriends";
+
+
 
 const FriendRequestsSection = ({ setModel }) => {
   const { requests, setRequests } = useFriendRequestData();
-  const token = sessionStorage.getItem("token")
-    ? JSON.parse(sessionStorage.getItem("token"))
-    : null;
+  const { token } = useUser();
   const { setRecommendedFriends } = useRecommendedFriends();
-
+  const {fetchFriendsData} = useGetFriends()
   const handleRequest = async (requestId, action) => {
     try {
       const res = await axios.put(
@@ -23,15 +25,19 @@ const FriendRequestsSection = ({ setModel }) => {
         }
       );
       toast.success(res.data);
+
+   
       setRequests((prevRequests) =>
         prevRequests.filter((req) => req._id !== requestId)
       );
-      if (action === "accepted"){
+
+     
+      if (action === "accepted") {
         setRecommendedFriends((prevRequests) =>
           prevRequests.filter((req) => req._id !== requestId)
         );
+         fetchFriendsData()
       }
-      
     } catch (error) {
       toast.error(error.response?.data || "Failed to handle friend request");
     }
@@ -44,7 +50,7 @@ const FriendRequestsSection = ({ setModel }) => {
     >
       <IoMdCloseCircle
         size="24px"
-        className=" self-start hover:cursor-pointer hover:scale-105"
+        className="self-start hover:cursor-pointer hover:scale-105"
         onClick={() => setModel(false)}
       />
       <h2 className="text-2xl font-bold text-center mb-4">Friend Requests</h2>
